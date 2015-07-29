@@ -51,8 +51,7 @@
     "private": false,
     "directories": {
         "doc": "doc",
-        "lib": "lib",
-        "tests": "tests"
+        "test": "tests"
     },
     "main": "lib/manager.js",
     "bugs": {
