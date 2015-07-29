@@ -1,0 +1,279 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta name="generator" content="JSDoc 3.3.2">
+  <meta charset="utf-8">
+  <title>Source: manager.js</title>
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
+  <link href="css/baseline.css" rel="stylesheet">
+</head>
+
+<body onload="prettyPrint()">
+  <nav id="jsdoc-navbar" role="navigation" class="jsdoc-navbar">
+    <div id="jsdoc-navbar-container">
+      <div id="jsdoc-navbar-content">
+        <a href="index.html" class="jsdoc-navbar-package-name">Home</a>
+      </div>
+    </div>
+  </nav>
+  <div id="jsdoc-body-container">
+    <div id="jsdoc-content">
+      <div id="jsdoc-content-container">
+        <div id="jsdoc-banner" role="banner">
+        </div>
+        <div id="jsdoc-main" role="main">
+          <header class="page-header">
+            <h1>Source: manager.js</h1>
+          </header>
+          <article>
+            <pre class="prettyprint linenums"><code>/** 
+ * Generic BBOP manager for dealing with basic generic REST calls.
+ * This specific one is designed to be overridden by its subclasses.
+ * This one pretty much just uses its incoming resource string as the data.
+ * Mostly for testing purposes.
+ * 
+ * Both a &amp;lt;bbop-rest-response&gt; (or clean error data) and the manager
+ * itself (this as anchor) should be passed to the callbacks.
+ *
+ * @module bbop-rest-manager
+ */
+
+var us = require(&#x27;underscore&#x27;);
+var bbop = require(&#x27;bbop-core&#x27;);
+var registry = require(&#x27;bbop-registry&#x27;);
+
+/**
+ * Contructor for the REST manager.
+ * 
+ * See also: module:bbop-registry
+ * 
+ * @constructor
+ * @param {Object} response_parser - the response handler class to use for each call
+ * @returns {Object} rest manager object
+ */
+function manager(response_handler){
+    registry.call(this, [&#x27;success&#x27;, &#x27;error&#x27;]);
+    this._is_a = &#x27;bbop-rest-manager&#x27;;
+
+    // Get a good self-reference point.
+    var anchor = this;
+
+    // Per-manager logger.
+    this._logger = new bbop.logger(this._is_a);
+    //this._logger.DEBUG = true;
+    this._logger.DEBUG = false;
+    function ll(str){ anchor._logger.kvetch(str); }
+
+    // Handler instance.
+    this._response_handler = response_handler;
+
+    // The URL to query.
+    this._qurl = null;
+
+    // The argument payload to deliver to the URL.
+    this._qpayload = {};
+
+    // The way to do the above.
+    this._qmethod = null;
+
+    // Whether or not to prevent ajax events from going.
+    // This may not be usable, or applicable, to all backends.
+    this._safety = false;
+
+    /**
+     * Turn on or off the verbose messages. Uses &amp;lt;bbop.logger&gt;, so
+     * they should come out everywhere.
+     * 
+     * @param {Boolean} [p] - true or false for debugging
+     * @returns {Boolean} the current state of debugging
+     */
+    this.debug = function(p){
+	if( p === true || p === false ){
+	    this._logger.DEBUG = p;
+	    // TODO: add debug parameter a la include_highlighting
+	}
+	return this._logger.DEBUG;
+    };
+
+    // The main callback function called after a successful AJAX call in
+    // the update function.
+    this._run_success_callbacks = function(in_data){
+	ll(&#x27;run success callbacks...&#x27;);
+	//var response = anchor.(in_data);
+	var response = new anchor._response_handler(in_data);
+	anchor.apply_callbacks(&#x27;success&#x27;, [response, anchor]);
+    };
+
+    // This set is called when we run into a problem.
+    this._run_error_callbacks = function(in_data){
+	ll(&#x27;run error callbacks...&#x27;);
+	var response = new anchor._response_handler(in_data);
+	anchor.apply_callbacks(&#x27;error&#x27;, [response, anchor]);
+    };
+
+    /**
+     * The base target URL for our operations.
+     * 
+     * @param {String} [url] - update resource target with string
+     * @returns {String|null} the url as string (or null)
+     */
+    this.resource = function(url){
+	if( bbop.is_defined(url) &amp;amp;&amp;amp; 
+	    bbop.what_is(url) === &#x27;string&#x27; ){
+	    anchor._qurl = url;
+	}
+	return anchor._qurl;
+    };
+
+    /**
+     * The information to deliver to the resource.
+     * 
+     * @param {Object} [payload] - update payload information
+     * @returns {Object|null} a copy of the current payload
+     */
+    this.payload = function(payload){
+	if( bbop.is_defined(payload) &amp;amp;&amp;amp; 
+	    bbop.what_is(payload) === &#x27;object&#x27; ){
+	    anchor._qpayload = payload;
+	}
+	return bbop.clone(anchor._qpayload);
+    };
+
+    /**
+     * The method to use to get the resource, as a string.
+     * 
+     * @param {String} [method] - update aquisition method with string
+     * @returns {String|null} the string or null
+     */
+    this.method = function(method){
+	if( bbop.is_defined(method) &amp;amp;&amp;amp; 
+	    bbop.what_is(method) === &#x27;string&#x27; ){
+	    anchor._qmethod = method;
+	}
+	return anchor._qmethod;
+    };
+
+    /**
+     * This method is the most fundamental operation. It should
+     * combine the URL, payload, and method in the ways appropriate to
+     * the subclass engine. This one merely combines the string.
+     * 
+     * The method argument is naturally ignored in this dummy class.
+     * 
+     * See also &amp;lt;update&gt;.
+     * 
+     * @param {String} [url] - update resource target with string
+     * @param {Object} [payload] - object to represent arguments
+     * @param {String} [method - GET, POST, etc.
+     * @returns {String} the combined URL argument as string
+     */
+    this.action = function(url, payload, method){
+	if( bbop.is_defined(url) ){ anchor.resource(url); }
+	if( bbop.is_defined(payload) ){ anchor.payload(payload); }
+	if( bbop.is_defined(method) ){ anchor.method(method); }
+
+	// Since there is no AJAX/REST in our case, we just loop back
+	// with the argument string.
+	if( bbop.is_defined(anchor.resource()) ){
+	    return anchor.update(&#x27;success&#x27;);
+	}else{
+	    return anchor.update(&#x27;error&#x27;);
+	}
+    };
+}
+bbop.extend(manager, registry);
+
+/**
+ * Output writer for this object/class.
+ * See the documentation in &amp;lt;core.js&gt; on &amp;lt;dump&gt; and &amp;lt;to_string&gt;.
+ * 
+ * @returns {String}  string
+ */
+manager.prototype.to_string = function (){
+    return &#x27;[&#x27; + this._is_a + &#x27;]&#x27;;
+};
+
+/**
+ * Assemble the resource and arguments into a URL string.
+ * 
+ * May not be appropriate for all subclasses. Often used as a helper,
+ * etc.
+ * 
+ * Also see: &amp;lt;get_query_url&gt;
+ * 
+ * @returns {String} url string
+ */
+manager.prototype.assemble = function(){
+
+    // Conditional merging of the remaining variant parts.
+    var qurl = this.resource();
+    if( ! bbop.is_empty(this.payload()) ){
+	var asm = bbop.get_assemble(this.payload());
+	qurl = qurl + &#x27;?&#x27; + asm;
+    }
+    return qurl;
+};
+
+/**
+ * The user code to select the type of update (and thus the type
+ * of callbacks to be called on data return).
+ * 
+ * Also see: &amp;lt;get_query_url&gt;
+ * 
+ * @param {String} callback_type - callback type string; &#x27;success&#x27; and &#x27;error&#x27; (see subclasses)
+ * @returns {String} the query url
+ */
+manager.prototype.update = function(callback_type){
+
+    // Conditional merging of the remaining variant parts.
+    var qurl = this.resource();
+    if( ! bbop.is_empty(this.payload()) ){
+	var asm = bbop.get_assemble(this.payload());
+	qurl = qurl + &#x27;?&#x27; + asm;
+    }
+
+    // Callbacks accordingly.
+    if( callback_type === &#x27;success&#x27; ){
+	this._run_success_callbacks(qurl);
+    }else if( callback_type === &#x27;error&#x27; ){
+	this._run_error_callbacks(qurl);
+    }else{
+    	throw new Error(&quot;Unknown callback_type: &quot; + callback_type);
+    }
+    
+    //ll(&#x27;qurl: &#x27; + qurl);
+    return qurl;
+};
+
+///
+/// Exportable body.
+///
+
+module.exports = manager;
+</code></pre>
+          </article>
+        </div>
+      </div>
+      <nav id="jsdoc-toc-nav" role="navigation"></nav>
+    </div>
+  </div>
+  <footer id="jsdoc-footer" class="jsdoc-footer">
+    <div id="jsdoc-footer-container">
+      <p>
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.3.2 on July 28, 2015.
+      </p>
+    </div>
+  </footer>
+  <script src="scripts/jquery.min.js"></script>
+  <script src="scripts/jquery.cookie.js"></script>
+  <script src="scripts/tree.jquery.js"></script>
+  <script src="scripts/prettify.js"></script>
+  <script src="scripts/jsdoc-toc.js"></script>
+  <script src="scripts/linenumber.js"></script>
+  <script src="scripts/scrollanchor.js"></script>
+</body>
+
+</html>
