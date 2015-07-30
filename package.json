@@ -30,6 +30,8 @@
         "bbop-core": "0.0.4",
         "bbop-registry": "0.0.2",
         "bbop-rest-response": "0.0.3",
+        "jquery": "2.1.4",
+        "sync-request": "2.0.1",
         "underscore": "1.8.3"
     },
     "devDependencies": {

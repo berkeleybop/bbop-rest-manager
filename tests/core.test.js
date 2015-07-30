@@ -9,6 +9,7 @@ var managers = require('..');
 
 var manager_base = managers.base;
 var manager_node = managers.node;
+var manager_node_sync = managers.node_sync;
 
 // Correct environment, ready testing.
 var bbop = require('bbop-core');
@@ -95,7 +96,7 @@ describe('bbop-rest-manager#node + bbop-rest-response#json', function(){
 	var m = new manager_node(response_json);
 	m.register('success', function(resp, man){
 	    var type = resp.raw()['type'];
-	    assert.equal(true, false, 'success callback is nit expected');
+	    assert.equal(true, false, 'success callback is not expected');
 	});
 	m.register('error', function(resp, man){
 	    assert.equal(true, true, 'successful failure');
@@ -103,4 +104,53 @@ describe('bbop-rest-manager#node + bbop-rest-response#json', function(){
 	var qurl = m.action(target);
 	
     });
+});
+
+describe('bbop-rest-manager#node_sync + bbop-rest-response#json', function(){
+    
+    it('basic successful sync callback', function(){
+	
+    	var target = 'http://amigo.geneontology.org/amigo/term/GO:0022008/json';
+     
+    	var m = new manager_node_sync(response_json);
+    	m.register('success', function(resp, man){
+    	    var type = resp.raw()['type'];
+    	    assert.equal(type, 'term', 'success callback');
+    	});
+    	m.register('error', function(resp, man){
+    	    assert.equal(true, false, 'error callback is not expected');
+    	});	    
+    	var qurl = m.action(target);
+	
+    });
+
+    it('basic error sync callback', function(){
+	
+    	// Remote 500 error.
+    	var target = 'http://amigo.geneontology.org/amigo/term/GO:0022008/jso';
+     
+    	var m = new manager_node_sync(response_json);
+    	m.register('success', function(resp, man){
+    	    var type = resp.raw()['type'];
+    	    assert.equal(true, false, 'success callback is not expected');
+    	});
+    	m.register('error', function(resp, man){
+    	    assert.equal(true, true, 'successful failure');
+    	});	    
+    	var qurl = m.action(target);	
+    });
+
+    it('basic successful sync fetch', function(){
+	
+    	var target = 'http://amigo.geneontology.org/amigo/term/GO:0022008/json';
+     
+    	var m = new manager_node_sync(response_json);
+    	var resp = m.fetch(target);
+	
+	assert.equal(bbop.what_is(resp), 'bbop-rest-response-json',
+		     'correct type');
+    	var type = resp.raw()['type'];
+    	assert.equal(type, 'term', 'success callback');
+    });
+
 });
