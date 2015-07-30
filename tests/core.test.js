@@ -5,24 +5,27 @@
 var chai = require('chai');
 chai.config.includeStack = true;
 var assert = chai.assert;
-var manager = require('..');
+var managers = require('..');
+
+var manager_base = managers.base;
+var manager_node = managers.node;
 
 // Correct environment, ready testing.
 var bbop = require('bbop-core');
-var response = require('bbop-rest-response').base;
+var response_base = require('bbop-rest-response').base;
 var response_json = require('bbop-rest-response').json;
 
 ///
 /// Start unit testing.
 ///
 
-describe('bbop-rest-manager + bbop-rest-response', function(){
+describe('bbop-rest-manager#base + bbop-rest-response#basae', function(){
 
     it('basic', function(){
 
 	// 
 	var str = '';
-	var m = new manager(response);
+	var m = new manager_base(response_base);
 	m.register('success', function(resp, man){
 	    str += resp.raw();
 	});
@@ -42,7 +45,7 @@ describe('bbop-rest-manager + bbop-rest-response', function(){
     });
 });
 
-describe('bbop-rest-manager + bbop-response-json', function(){
+describe('bbop-rest-manager#base + bbop-rest-response#json', function(){
     
     it('basic', function(){
 	
@@ -51,7 +54,7 @@ describe('bbop-rest-manager + bbop-response-json', function(){
 	
 	// 
 	var total = 0;
-	var m = new manager(response_json);
+	var m = new manager_base(response_json);
 	m.register('success', function(resp, man){
 	    total += resp.raw()['foo']['bar'];
 	});
@@ -62,6 +65,42 @@ describe('bbop-rest-manager + bbop-response-json', function(){
 	assert.equal(total, 2, 'json another trip: 2');
 	m.action(j2);
 	assert.equal(total, 4, 'json another trip: 4');
+	
+    });
+});
+
+describe('bbop-rest-manager#node + bbop-rest-response#json', function(){
+    
+    it('basic successful async callback', function(){
+	
+	var target = 'http://amigo.geneontology.org/amigo/term/GO:0022008/json';
+     
+	var m = new manager_node(response_json);
+	m.register('success', function(resp, man){
+	    var type = resp.raw()['type'];
+	    assert.equal(type, 'term', 'success callback');
+	});
+	m.register('error', function(resp, man){
+	    assert.equal(true, false, 'error callback is not expected');
+	});	    
+	var qurl = m.action(target);
+	
+    });
+
+    it('basic error async callback', function(){
+	
+	// Remote 500 error.
+	var target = 'http://amigo.geneontology.org/amigo/term/GO:0022008/jso';
+     
+	var m = new manager_node(response_json);
+	m.register('success', function(resp, man){
+	    var type = resp.raw()['type'];
+	    assert.equal(true, false, 'success callback is nit expected');
+	});
+	m.register('error', function(resp, man){
+	    assert.equal(true, true, 'successful failure');
+	});	    
+	var qurl = m.action(target);
 	
     });
 });
