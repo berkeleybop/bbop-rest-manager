@@ -168,51 +168,60 @@ describe('bbop-rest-manager#node + bbop-rest-response#json', function(){
 
 });
 
-// describe('bbop-rest-manager#node_sync + bbop-rest-response#json', function(){
+describe('bbop-rest-manager#node_sync + bbop-rest-response#json', function(){
     
-//     it('basic successful sync callback', function(){
+    it('basic successful sync (direct reponse)', function(){
 	
-//     	var target = 'http://amigo.geneontology.org/amigo/term/GO:0022008/json';
+    	var target = 'http://amigo.geneontology.org/amigo/term/GO:0022008/json';
      
-//     	var m = new manager_node_sync(response_json);
-//     	m.register('success', function(resp, man){
-//     	    var type = resp.raw()['type'];
-//     	    assert.equal(type, 'term', 'success callback');
-//     	});
-//     	m.register('error', function(resp, man){
-//     	    assert.equal(true, false, 'error callback is not expected');
-//     	});	    
-//     	var qurl = m.action(target);
+    	var m = new manager_node_sync(response_json);
+    	var resp = m.fetch(target);
+    	var type = resp.raw()['type'];
+    	assert.equal(type, 'term', 'success callback');
 	
-//     });
+    });
 
-//     it('basic error sync callback', function(){
+    it('basic successful sync (callback)', function(){
 	
-//     	// Remote 500 error.
-//     	var target = 'http://amigo.geneontology.org/amigo/term/GO:0022008/jso';
+    	var target = 'http://amigo.geneontology.org/amigo/term/GO:0022008/json';
      
-//     	var m = new manager_node_sync(response_json);
-//     	m.register('success', function(resp, man){
-//     	    var type = resp.raw()['type'];
-//     	    assert.equal(true, false, 'success callback is not expected');
-//     	});
-//     	m.register('error', function(resp, man){
-//     	    assert.equal(true, true, 'successful failure');
-//     	});	    
-//     	var qurl = m.action(target);	
-//     });
-
-//     it('basic successful sync fetch', function(){
+    	var m = new manager_node_sync(response_json);
+    	m.register('success', function(resp, man){
+    	    var type = resp.raw()['type'];
+    	    assert.equal(type, 'term', 'success callback');
+    	});
+    	m.register('error', function(resp, man){
+    	    assert.equal(true, false, 'error callback is not expected');
+    	});	    
+    	var qurl = m.fetch(target);
 	
-//     	var target = 'http://amigo.geneontology.org/amigo/term/GO:0022008/json';
+    });
+
+    it('basic error sync (callback)', function(){
+	
+    	// Remote 500 error.
+    	var target = 'http://amigo.geneontology.org/amigo/term/GO:0022008/jso';
      
-//     	var m = new manager_node_sync(response_json);
-//     	var resp = m.fetch(target);
-	
-// 	assert.equal(bbop.what_is(resp), 'bbop-rest-response-json',
-// 		     'correct type');
-//     	var type = resp.raw()['type'];
-//     	assert.equal(type, 'term', 'success callback');
-//     });
+    	var m = new manager_node_sync(response_json);
+    	m.register('success', function(resp, man){
+    	    var type = resp.raw()['type'];
+    	    assert.equal(true, false, 'success callback is not expected');
+    	});
+    	m.register('error', function(resp, man){
+    	    assert.equal(true, true, 'successful failure');
+    	});	    
+    	m.fetch(target);
+    });
 
-// });
+    it('basic success sync (instant deferred)', function(){
+	
+    	var target = 'http://amigo.geneontology.org/amigo/term/GO:0022008/json';
+     
+    	var m = new manager_node_sync(response_json);
+    	m.start(target).then(function(resp){
+    	    var type = resp.raw()['type'];
+    	    assert.equal(true, false, 'success callback is not expected');
+	}).done();
+    });
+
+});
