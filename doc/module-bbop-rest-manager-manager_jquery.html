@@ -4,7 +4,7 @@
 <head>
   <meta name="generator" content="JSDoc 3.3.2">
   <meta charset="utf-8">
-  <title>Class: manager</title>
+  <title>Class: manager_jquery</title>
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
@@ -24,8 +24,8 @@
       <div id="jsdoc-content-container">
         <div id="jsdoc-main" role="main">
           <header class="page-header">
-            <h1><div class="symbol-detail-labels"><span class="label label-kind">class</span>&nbsp;<span class="label label-inner">inner</span></div><small><a href="module-bbop-rest-manager.html">bbop-rest-manager</a>~<wbr></small><span class="symbol-name">manager</span></h1>
-            <p class="source-link">Source: <a href="manager.js.html#source-line-26">manager.<wbr>js:26</a></p>
+            <h1><div class="symbol-detail-labels"><span class="label label-kind">class</span>&nbsp;<span class="label label-inner">inner</span></div><small><a href="module-bbop-rest-manager.html">bbop-rest-manager</a>~<wbr></small><span class="symbol-name">manager_jquery</span></h1>
+            <p class="source-link">Source: <a href="manager.js.html#source-line-561">manager.<wbr>js:561</a></p>
             <dl class="dl-compact">
             </dl>
           </header>
@@ -35,36 +35,27 @@
               <div class="summary-content">
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="module-bbop-rest-manager-manager.html#action">action([url][, payload], method)</a></dt>
+                    <dt><a href="module-bbop-rest-manager-manager_jquery.html#fetch">fetch([url][, payload], method)</a></dt>
                     <dd>
                     </dd>
-                    <dt><a href="module-bbop-rest-manager-manager.html#assemble">assemble()</a></dt>
-                    <dd>
-                    </dd>
-                    <dt><a href="module-bbop-rest-manager-manager.html#debug">debug([p])</a></dt>
+                    <dt><a href="module-bbop-rest-manager-manager_jquery.html#headers">headers([header_set])</a></dt>
                     <dd>
                     </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="module-bbop-rest-manager-manager.html#method">method([method])</a></dt>
+                    <dt><a href="module-bbop-rest-manager-manager_jquery.html#jsonp_callback">jsonp_callback([cstring])</a></dt>
                     <dd>
                     </dd>
-                    <dt><a href="module-bbop-rest-manager-manager.html#payload">payload([payload])</a></dt>
-                    <dd>
-                    </dd>
-                    <dt><a href="module-bbop-rest-manager-manager.html#resource">resource([url])</a></dt>
+                    <dt><a href="module-bbop-rest-manager-manager_jquery.html#start">start([url][, payload], method)</a></dt>
                     <dd>
                     </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="module-bbop-rest-manager-manager.html#to_string">to_string()</a></dt>
-                    <dd>
-                    </dd>
-                    <dt><a href="module-bbop-rest-manager-manager.html#update">update(callback_type)</a></dt>
+                    <dt><a href="module-bbop-rest-manager-manager_jquery.html#use_jsonp">use_jsonp([use_p])</a></dt>
                     <dd>
                     </dd>
                   </dl>
@@ -73,9 +64,14 @@
             </div>
           </section>
           <section>
-            <h2 id="manager">new&nbsp;<span class="symbol-name">manager</span><span class="signature"><span class="signature-params">(response_parser)</span></span></h2>
-            <p>Contructor for the REST manager.</p>
-            <p>See also: module:bbop-registry</p>
+            <h2 id="manager_jquery">new&nbsp;<span class="symbol-name">manager_jquery</span><span class="signature"><span class="signature-params">(response_handler)</span></span></h2>
+            <p>Contructor for the jQuery REST manager</p>
+            <p>jQuery BBOP manager for dealing with actual ajax calls. Remember, this is actually a &quot;subclass&quot; of {bbop-rest-manager}.</p>
+            <p>Use
+              <use_jsonp> is you are working against a JSONP service instead of a non-cross-site JSON service.</p>
+            <p>See also:
+              <bbop.rest.manager>
+            </p>
             <section>
               <h3>Parameter</h3>
               <table class="jsdoc-details-table">
@@ -90,7 +86,7 @@
                 <tbody>
                   <tr>
                     <td>
-                      <p>response_parser</p>
+                      <p>response_handler</p>
                     </td>
                     <td>
                       <p>Object</p>
@@ -99,7 +95,6 @@
                       <p>&nbsp;</p>
                     </td>
                     <td>
-                      <p>the response handler class to use for each call</p>
                     </td>
                   </tr>
                 </tbody>
@@ -108,18 +103,16 @@
             <dl class="dl-compact">
               <dt>Returns</dt>
               <dd>
-                <p><code>Object</code>&nbsp;rest manager object</p>
+                <p><code>manager_node_sync</code>&nbsp;</p>
               </dd>
             </dl>
           </section>
           <section>
             <h2>Methods</h2>
             <section>
-              <h3 id="action"><span class="symbol-name">action</span><span class="signature"><span class="signature-params">([url][, payload], method)</span>&nbsp;&rarr; <span class="signature-returns"> String</span></span></h3>
-              <p>This method is the most fundamental operation. It should combine the URL, payload, and method in the ways appropriate to the subclass engine. This one merely combines the string.</p>
-              <p>The method argument is naturally ignored in this dummy class.</p>
-              <p>See also
-                <update>.</p>
+              <h3 id="fetch"><span class="symbol-name">fetch</span><span class="signature"><span class="signature-params">([url][, payload], method)</span>&nbsp;&rarr; <span class="signature-returns"> null</span></span></h3>
+              <p>It should combine the URL, payload, and method in the ways appropriate to the subclass engine.</p>
+              <p>Runs callbacks, returns null.</p>
               <section>
                 <h4>Parameters</h4>
                 <table class="jsdoc-details-table">
@@ -180,25 +173,11 @@
               <dl class="dl-compact">
                 <dt>Returns</dt>
                 <dd>
-                  <p><code>String</code>&nbsp;the combined URL argument as string</p>
+                  <p><code>null</code>&nbsp;returns null</p>
                 </dd>
               </dl>
-              <h3 id="assemble"><span class="symbol-name">assemble</span><span class="signature"><span class="signature-params">()</span>&nbsp;&rarr; <span class="signature-returns"> String</span></span></h3>
-              <p>Assemble the resource and arguments into a URL string.</p>
-              <p>May not be appropriate for all subclasses. Often used as a helper, etc.
-              </p>
-              <p>Also see:
-                <get_query_url>
-              </p>
-              <dl class="dl-compact">
-                <dt>Returns</dt>
-                <dd>
-                  <p><code>String</code>&nbsp;url string</p>
-                </dd>
-              </dl>
-              <h3 id="debug"><span class="symbol-name">debug</span><span class="signature"><span class="signature-params">([p])</span>&nbsp;&rarr; <span class="signature-returns"> Boolean</span></span></h3>
-              <p>Turn on or off the verbose messages. Uses
-                <bbop.logger>, so they should come out everywhere.</p>
+              <h3 id="headers"><span class="symbol-name">headers</span><span class="signature"><span class="signature-params">([header_set])</span>&nbsp;&rarr; <span class="signature-returns"> Object</span></span></h3>
+              <p>Try and control the server with the headers.</p>
               <section>
                 <h4>Parameter</h4>
                 <table class="jsdoc-details-table">
@@ -213,81 +192,7 @@
                   <tbody>
                     <tr>
                       <td>
-                        <p>p</p>
-                      </td>
-                      <td>
-                        <p>Boolean</p>
-                      </td>
-                      <td>
-                        <p>Yes</p>
-                      </td>
-                      <td>
-                        <p>true or false for debugging</p>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </section>
-              <dl class="dl-compact">
-                <dt>Returns</dt>
-                <dd>
-                  <p><code>Boolean</code>&nbsp;the current state of debugging</p>
-                </dd>
-              </dl>
-              <h3 id="method"><span class="symbol-name">method</span><span class="signature"><span class="signature-params">([method])</span>&nbsp;&rarr; <span class="signature-returns"> (String or null)</span></span></h3>
-              <p>The method to use to get the resource, as a string.</p>
-              <section>
-                <h4>Parameter</h4>
-                <table class="jsdoc-details-table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Type</th>
-                      <th>Optional</th>
-                      <th>Description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <p>method</p>
-                      </td>
-                      <td>
-                        <p>String</p>
-                      </td>
-                      <td>
-                        <p>Yes</p>
-                      </td>
-                      <td>
-                        <p>update aquisition method with string</p>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </section>
-              <dl class="dl-compact">
-                <dt>Returns</dt>
-                <dd>
-                  <p><code>(String or null)</code>&nbsp;the string or null</p>
-                </dd>
-              </dl>
-              <h3 id="payload"><span class="symbol-name">payload</span><span class="signature"><span class="signature-params">([payload])</span>&nbsp;&rarr; <span class="signature-returns"> (Object or null)</span></span></h3>
-              <p>The information to deliver to the resource.</p>
-              <section>
-                <h4>Parameter</h4>
-                <table class="jsdoc-details-table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Type</th>
-                      <th>Optional</th>
-                      <th>Description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <p>payload</p>
+                        <p>header_set</p>
                       </td>
                       <td>
                         <p>Object</p>
@@ -296,7 +201,7 @@
                         <p>Yes</p>
                       </td>
                       <td>
-                        <p>update payload information</p>
+                        <p>hash of headers; jQuery internal default</p>
                       </td>
                     </tr>
                   </tbody>
@@ -305,13 +210,53 @@
               <dl class="dl-compact">
                 <dt>Returns</dt>
                 <dd>
-                  <p><code>(Object or null)</code>&nbsp;a copy of the current payload</p>
+                  <p><code>Object</code>&nbsp;hash of headers</p>
                 </dd>
               </dl>
-              <h3 id="resource"><span class="symbol-name">resource</span><span class="signature"><span class="signature-params">([url])</span>&nbsp;&rarr; <span class="signature-returns"> (String or null)</span></span></h3>
-              <p>The base target URL for our operations.</p>
+              <h3 id="jsonp_callback"><span class="symbol-name">jsonp_callback</span><span class="signature"><span class="signature-params">([cstring])</span>&nbsp;&rarr; <span class="signature-returns"> String</span></span></h3>
+              <p>Get/set the jQuery jsonp callback string to something other than &quot;json.wrf&quot;.
+              </p>
               <section>
                 <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>cstring</p>
+                      </td>
+                      <td>
+                        <p>String</p>
+                      </td>
+                      <td>
+                        <p>Yes</p>
+                      </td>
+                      <td>
+                        <p>setter string</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>String</code>&nbsp;string</p>
+                </dd>
+              </dl>
+              <h3 id="start"><span class="symbol-name">start</span><span class="signature"><span class="signature-params">([url][, payload], method)</span>&nbsp;&rarr; <span class="signature-returns"> Object</span></span></h3>
+              <p>See the documentation in
+                <manager.js> on update to get more of the story. This override function adds functionality for jQuery.
+              </p>
+              <section>
+                <h4>Parameters</h4>
                 <table class="jsdoc-details-table">
                   <thead>
                     <tr>
@@ -336,31 +281,45 @@
                         <p>update resource target with string</p>
                       </td>
                     </tr>
+                    <tr>
+                      <td>
+                        <p>payload</p>
+                      </td>
+                      <td>
+                        <p>Object</p>
+                      </td>
+                      <td>
+                        <p>Yes</p>
+                      </td>
+                      <td>
+                        <p>object to represent arguments</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>method</p>
+                      </td>
+                      <td>
+                        <p>String</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>GET, POST, etc.</p>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </section>
               <dl class="dl-compact">
                 <dt>Returns</dt>
                 <dd>
-                  <p><code>(String or null)</code>&nbsp;the url as string (or null)</p>
+                  <p><code>Object</code>&nbsp;promise for the processed response subclass</p>
                 </dd>
               </dl>
-              <h3 id="to_string"><span class="symbol-name">to_string</span><span class="signature"><span class="signature-params">()</span>&nbsp;&rarr; <span class="signature-returns"> String</span></span></h3>
-              <p>Output writer for this object/class. See the documentation in
-                <core.js> on
-                  <dump> and
-                    <to_string>.</p>
-              <dl class="dl-compact">
-                <dt>Returns</dt>
-                <dd>
-                  <p><code>String</code>&nbsp;string</p>
-                </dd>
-              </dl>
-              <h3 id="update"><span class="symbol-name">update</span><span class="signature"><span class="signature-params">(callback_type)</span>&nbsp;&rarr; <span class="signature-returns"> String</span></span></h3>
-              <p>The user code to select the type of update (and thus the type of callbacks to be called on data return).</p>
-              <p>Also see:
-                <get_query_url>
-              </p>
+              <h3 id="use_jsonp"><span class="symbol-name">use_jsonp</span><span class="signature"><span class="signature-params">([use_p])</span>&nbsp;&rarr; <span class="signature-returns"> Boolean</span></span></h3>
+              <p>Set the jQuery engine to use JSONP handling instead of the default JSON. If set, the callback function to use will be given my the argument &quot;json.wrf&quot; (like Solr), so consider that special.</p>
               <section>
                 <h4>Parameter</h4>
                 <table class="jsdoc-details-table">
@@ -375,16 +334,16 @@
                   <tbody>
                     <tr>
                       <td>
-                        <p>callback_type</p>
+                        <p>use_p</p>
                       </td>
                       <td>
-                        <p>String</p>
+                        <p>Boolean</p>
                       </td>
                       <td>
-                        <p>&nbsp;</p>
+                        <p>Yes</p>
                       </td>
                       <td>
-                        <p>callback type string; 'success' and 'error' (see subclasses)</p>
+                        <p>external setter for</p>
                       </td>
                     </tr>
                   </tbody>
@@ -393,7 +352,7 @@
               <dl class="dl-compact">
                 <dt>Returns</dt>
                 <dd>
-                  <p><code>String</code>&nbsp;the query url</p>
+                  <p><code>Boolean</code>&nbsp;boolean</p>
                 </dd>
               </dl>
             </section>
