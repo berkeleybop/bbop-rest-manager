@@ -10,6 +10,7 @@ var managers = require('..');
 var manager_base = managers.base;
 var manager_node = managers.node;
 var manager_node_sync = managers.node_sync;
+var manager_jquery = managers.jquery;
 
 // Correct environment, ready testing.
 var bbop = require('bbop-core');
@@ -222,6 +223,60 @@ describe('bbop-rest-manager#node_sync + bbop-rest-response#json', function(){
     	    var type = resp.raw()['type'];
     	    assert.equal(true, false, 'success callback is not expected');
 	}).done();
+    });
+
+});
+
+describe('bbop-rest-manager#jquery + bbop-rest-response#json', function(){
+    
+
+    var mock_jQuery = null;
+    before(function(){
+	// Modify the manager into functioning--will need this to get
+	// tests working for jQuery in this environment.
+	var domino = require('domino');
+	mock_jQuery = require('jquery')(domino.createWindow());
+	var XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
+	mock_jQuery.support.cors = true;
+	mock_jQuery.ajaxSettings.xhr = function() {
+	    return new XMLHttpRequest();
+	};
+    });
+
+    it('test out mock jquery call with callback', function(){
+	
+    	var target = 'http://amigo.geneontology.org/amigo/term/GO:0022008/json';
+     
+	// Goose jQuery into functioning here.
+    	var m = new manager_jquery(response_json);
+	m.JQ = mock_jQuery;
+
+    	m.register('success', function(resp, man){
+    	    var type = resp.raw()['type'];
+    	    assert.equal(true, true, 'successful failure');
+    	});
+    	m.register('error', function(resp, man){
+    	    assert.equal(true, false, 'success callback is not expected');
+    	});	    
+    	m.start(target);
+
+    });
+
+    it('test out mock jquery call with promise', function(){
+	
+    	var target = 'http://amigo.geneontology.org/amigo/term/GO:0022008/json';
+     
+	// Goose jQuery into functioning here.
+    	var m = new manager_jquery(response_json);
+	m.JQ = mock_jQuery;
+
+	// Try it out.
+    	m.start(target).then(function(resp){
+	    //console.log('resp', resp);
+    	    var type = resp.raw()['type'];
+    	    assert.equal(type, 'term', 'success callback is not expected');
+	}).done();
+
     });
 
 });
