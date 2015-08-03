@@ -9,7 +9,7 @@ var managers = require('..');
 
 var manager_base = managers.base;
 var manager_node = managers.node;
-var manager_node_sync = managers.node_sync;
+var manager_sync_request = managers.sync_request;
 var manager_jquery = managers.jquery;
 
 // Correct environment, ready testing.
@@ -169,13 +169,13 @@ describe('bbop-rest-manager#node + bbop-rest-response#json', function(){
 
 });
 
-describe('bbop-rest-manager#node_sync + bbop-rest-response#json', function(){
+describe('bbop-rest-manager#sync_request + bbop-rest-response#json', function(){
     
     it('basic successful sync (direct reponse)', function(){
 	
     	var target = 'http://amigo.geneontology.org/amigo/term/GO:0022008/json';
      
-    	var m = new manager_node_sync(response_json);
+    	var m = new manager_sync_request(response_json);
     	var resp = m.fetch(target);
     	var type = resp.raw()['type'];
     	assert.equal(type, 'term', 'success callback');
@@ -186,7 +186,7 @@ describe('bbop-rest-manager#node_sync + bbop-rest-response#json', function(){
 	
     	var target = 'http://amigo.geneontology.org/amigo/term/GO:0022008/json';
      
-    	var m = new manager_node_sync(response_json);
+    	var m = new manager_sync_request(response_json);
     	m.register('success', function(resp, man){
     	    var type = resp.raw()['type'];
     	    assert.equal(type, 'term', 'success callback');
@@ -203,7 +203,7 @@ describe('bbop-rest-manager#node_sync + bbop-rest-response#json', function(){
     	// Remote 500 error.
     	var target = 'http://amigo.geneontology.org/amigo/term/GO:0022008/jso';
      
-    	var m = new manager_node_sync(response_json);
+    	var m = new manager_sync_request(response_json);
     	m.register('success', function(resp, man){
     	    var type = resp.raw()['type'];
     	    assert.equal(true, false, 'success callback is not expected');
@@ -218,7 +218,7 @@ describe('bbop-rest-manager#node_sync + bbop-rest-response#json', function(){
 	
     	var target = 'http://amigo.geneontology.org/amigo/term/GO:0022008/json';
      
-    	var m = new manager_node_sync(response_json);
+    	var m = new manager_sync_request(response_json);
     	m.start(target).then(function(resp){
     	    var type = resp.raw()['type'];
     	    assert.equal(true, false, 'success callback is not expected');
