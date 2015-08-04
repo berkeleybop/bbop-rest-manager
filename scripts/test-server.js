@@ -13,29 +13,31 @@ var server = null;
 var app = null;
 //
 
+var times = 0;
 function ll(req){
-    console.log("req", req);
-};
+    //console.log("req", req);
+    console.log("hit #: ", times++);
+}
 
 //
 app = express();
 app.use(body_parser.json());
 app.use(body_parser.urlencoded({ extended: true }));
 app.get('/error', function(req, res) {
-    //ll(req);
+    ll(req);
     var q = null;
     if( req && req.query && req.query['q'] ){ q = req.query['q']; }
     res.status(500);
     res.send({'text': 'error','q': q,'method': 'GET'});
 });
 app.get('/', function(req, res) {
-    //ll(req);
+    ll(req);
     var q = null;
     if( req && req.query && req.query['q'] ){ q = req.query['q']; }
     res.send({'text': 'hello world','q': q,'method': 'GET'});
 });
 app.post('/', function(req, res) {
-    //ll(req);
+    ll(req);
     var q = null;
     if( req && req.body && req.body['q'] ){ q = req.body['q']; }
     res.send({'text': 'hello world','q': q,'method': 'POST'});

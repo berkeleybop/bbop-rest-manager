@@ -36,6 +36,40 @@ var response_json = require('bbop-rest-response').json;
 var start_port = 3344;
 var target = 'http://localhost:' + start_port.toString();
 
+var test_server = null;
+before(function(done){
+
+    //console.log('Starting test-server.js, with pid: ' + test_server.pid);
+    console.log('Starting test-server.js...');
+
+    // Spawn the test server (necessary because if we have it in here,
+    // sync-request will block it too, leading to a deadlock) and give
+    // in a second to start functioning.
+    var spawn = require('child_process').spawn;
+    test_server = spawn('node', ['./scripts/test-server.js']);
+    var sleep = require('sleep').sleep(1);
+    //test_server.stdin.end();    
+
+    test_server.on('err', function(err){
+	console.log('test-server.js failed with error: ', err);
+    });
+    test_server.on('exit', function(code, signal){
+	//console.log('test-server.js exitted (with signal ' + signal + ')');
+    });
+    test_server.on('close', function(code, signal){
+	console.log('test-server.js closed (by signal ' + signal + ')');
+    });
+
+    done();
+});
+
+after(function(done){
+    if( test_server ){
+	test_server.kill('SIGHUP');
+    }
+    done();
+});
+
 ///
 /// Start unit testing.
 ///
