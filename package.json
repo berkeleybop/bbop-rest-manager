@@ -1,6 +1,6 @@
 {
     "name": "bbop-rest-manager",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "license": "BSD-3-Clause",
     "description": "The is the 'new' version of the manager event model for BBOP systems.",
     "keywords": [
@@ -32,7 +32,7 @@
         "bbop-rest-response": "0.0.3",
         "body-parser": "1.13.3",
         "domino": "1.0.19",
-	"express": "4.13.3",
+        "express": "4.13.3",
         "jquery": "2.1.4",
         "q": "1.4.1",
         "sleep": "3.0.0",
