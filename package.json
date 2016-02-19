@@ -27,9 +27,9 @@
         "npm": ">= 2.7.4"
     },
     "dependencies": {
-        "bbop-core": "0.0.4",
-        "bbop-registry": "0.0.2",
-        "bbop-rest-response": "0.0.3",
+        "bbop-core": "0.0.5",
+        "bbop-registry": "0.0.3",
+        "bbop-rest-response": "0.0.4",
         "body-parser": "1.13.3",
         "domino": "1.0.19",
         "express": "4.13.3",
