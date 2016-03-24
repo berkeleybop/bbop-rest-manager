@@ -15,18 +15,6 @@ var manager_node = managers.node;
 var manager_sync_request = managers.sync_request;
 var manager_jquery = managers.jquery;
 
-// var manager_meta_list = [
-//     {'name': 'node',
-//      'object': manager_node,
-//      'type': 'async'}, 
-//     {'name': 'sync_request',
-//      'object': manager_sync_request,
-//      'type': 'sync'}, 
-//     {'name': 'jquery',
-//      'object': manager_jquery,
-//      'type': 'async'}
-// ];
-
 // Correct environment, ready testing.
 var bbop = require('bbop-core');
 var response_base = require('bbop-rest-response').base;
