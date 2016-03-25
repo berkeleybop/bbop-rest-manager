@@ -86,6 +86,17 @@ describe('node + json + coordination', function(){
 	var count = 0;
 	var str ='';
 	function acc_fun(resp, man){
+
+	    // Check the argument basics.
+	    //console.log(resp._is_a);
+    	    assert.isObject(resp, 'caught response object');
+    	    assert.equal(resp._is_a, 'bbop-rest-response-json',
+			 'caught right response object' + resp._is_a);
+	    //console.log(man._is_a);
+    	    assert.isObject(man, 'caught manager object');
+    	    assert.equal(man._is_a, 'bbop-rest-manager.node',
+			 'caught right manager object' + man._is_a);
+
 	    // Get what we passed as an argument.
     	    var q = resp.raw()['q'];
 	    count++;
@@ -93,11 +104,19 @@ describe('node + json + coordination', function(){
 	}
 
 	function fin_fun(man){
+
+	    // Check the argument basics.
+	    //console.log(man._is_a);
+    	    assert.isObject(man, 'caught manager object');
+    	    assert.equal(man._is_a, 'bbop-rest-manager.node',
+			 'caught right manager object' + man._is_a);
+
     	    assert.equal(count, 3, 'got three calls: ' + count);
     	    assert.equal(str, 'f1f2f3', 'ordered correctly: ' + str);
     	    done();
 	}
 
+	// Should never get here.
 	function err_fun(err, man){
     	    assert.isTrue(false, 'died on error');
     	    done();
@@ -116,41 +135,64 @@ describe('node + json + coordination', function(){
 	
     	var m = new manager_node(response_json);
 
-	// Define three promise producing functions.
-	function f1(){
+    	// Define three promise producing functions.
+    	function f1(){
     	    return m.start(target + path, {'q': 'f1'}, meth);
-	}
-	function f2(){
+    	}
+    	function f2(){
     	    return m.start(target + path, {'q': 'f2'}, meth);
-	}
-	function f3(){
+    	}
+    	function f3(){
     	    return m.start(target + path, {'q': 'f3'}, meth);
-	}
+    	}
 
-	var count = 0;
-	var str ='';
-	function acc_fun(resp, man){
-	    // Get what we passed as an argument.
+    	var count = 0;
+    	var str ='';
+    	function acc_fun(resp, man){
+
+	    // Check the first pass of the accumulator.
+	    //console.log(resp._is_a);
+    	    assert.isObject(resp, 'caught response object');
+    	    assert.equal(resp._is_a, 'bbop-rest-response-json',
+			 'caught right response object' + resp._is_a);
+	    //console.log(man._is_a);
+    	    assert.isObject(man, 'caught manager object');
+    	    assert.equal(man._is_a, 'bbop-rest-manager.node',
+			 'caught right manager object' + man._is_a);
+
+    	    // Get what we passed as an argument.
     	    var q = resp.raw()['q'];
-	    count++;
-	    str += q;
-	    throw new Error('NYO!');
-	}
+    	    count++;
+    	    str += q;
+    	    throw new Error('NYO!');
+    	}
 
-	function fin_fun(man){
-	    // Should never get here.
-	    assert.isTrue(false, 'should never be in final function');
+    	// Should never get here due to error.
+    	function fin_fun(man){
+    	    assert.isTrue(false, 'should never be in final function');
     	    done();
-	}
+    	}
 
-	function err_fun(err, man){
+    	function err_fun(err, man){
+
+	    // Test to make sure the manager got through.
+	    //console.log('man._is_a', man._is_a);
+    	    assert.isObject(man, 'caught manager object');
+    	    assert.equal(man._is_a, 'bbop-rest-manager.node',
+			 'caught right manager object' + man._is_a);
+
+	    // We got partial.
+    	    assert.equal(count, 1, 'got one call: ' + count);
+    	    assert.equal(str, 'f1', 'ordered correctly: ' + str);
+
+	    // Test tha main parts of the error.
     	    assert.equal('Error: NYO!', err.toString(), 'caught error');
-	    //console.log(err);
+    	    //console.log(err);
     	    done();
-	}
+    	}
 
-	// Run.
-	m.run_promise_functions([f1, f2, f3], acc_fun, fin_fun, err_fun);
+    	// Run.
+    	m.run_promise_functions([f1, f2, f3], acc_fun, fin_fun, err_fun);
 
     });
 
