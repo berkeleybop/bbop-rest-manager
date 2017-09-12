@@ -20,6 +20,13 @@ var bbop = require('bbop-core');
 var response_base = require('bbop-rest-response').base;
 var response_json = require('bbop-rest-response').json;
 
+var timeout = 60000;
+
+// Wikidata test parameters.
+var wikidata = 'https://query.wikidata.org/sparql';
+// Get PMID:9999.
+var wikiquery = 'PREFIX wd: <http://www.wikidata.org/entity/> PREFIX wdt: <http://www.wikidata.org/prop/direct/> SELECT ?rtcl ?title ?author ?journal ?date WHERE { ?rtcl wdt:P698 "999". OPTIONAL { ?rtcl wdt:P1476 ?title. } OPTIONAL { ?rtcl wdt:P2093 ?author. } OPTIONAL { ?rtcl wdt:P1433 ?journal. } OPTIONAL { ?rtcl wdt:P577 ?date. } } LIMIT 1';
+
 // Standard test parameters.
 var start_port = 3344;
 var target = 'http://localhost:' + start_port.toString();
@@ -429,4 +436,147 @@ describe('bbop-rest-manager#jquery + bbop-rest-response#json', function(){
     	}).done();
     });
 
+});
+
+// We know that we need to send the right headers to get a parsable
+// response, and as they have good uptime, we'll use them as a
+// testbed.
+describe('wikidata header tests; node + bbop-rest-response#json', function(){
+    
+    it('wikidata json w/node GET', function(done){
+	
+    	var m = new manager_node(response_json);
+	// Either.
+	//m.headers([['accept', 'application/sparql-results+json']]);
+    	var resp = m.start(wikidata + '?query=' + encodeURIComponent(wikiquery),
+			   null, null,
+			   [['accept', 'application/sparql-results+json']]).then(function(resp){
+    			       //console.log('resp',resp);
+    			       assert.isDefined(resp.raw()['head'], 'has json head');
+    			       assert.isDefined(resp.raw()['results'], 'has json results');
+    			       done();
+    			   }).done();	
+    });
+
+    it('wikidata json w/node POST', function(done){
+	
+    	var m = new manager_node(response_json);
+	// Either.
+	//m.headers([['accept', 'application/sparql-results+json']]);
+    	var resp = m.start(wikidata + '?query=' + encodeURIComponent(wikiquery),
+			   null, 'POST',
+			   [['accept', 'application/sparql-results+json']]).then(function(resp){
+    			       //console.log('resp',resp);
+    			       assert.isDefined(resp.raw()['head'], 'has json head');
+    			       assert.isDefined(resp.raw()['results'], 'has json results');
+    			       done();
+    			   }).done();
+    });
+
+});
+    
+// We know that we need to send the right headers to get a parsable
+// response, and as they have good uptime, we'll use them as a
+// testbed.
+describe('wikidata header tests; sync + bbop-rest-response#json', function(){
+    
+    it('wikidata json w/sync GET (direct reponse)', function(done){
+	
+    	var m = new manager_sync_request(response_json);
+	// Either.
+	//m.headers([['accept', 'application/sparql-results+json']]);
+    	var resp = m.fetch(wikidata + '?query=' + encodeURIComponent(wikiquery),
+			   null, null,
+			   [['accept', 'application/sparql-results+json']]);
+	//console.log(m.headers());
+	//console.log(resp.raw());
+
+    	assert.isDefined(resp.raw()['head'], 'has json head');
+    	assert.isDefined(resp.raw()['results'], 'has json results');
+
+	done();
+    });
+
+    it('wikidata json w/sync POST (direct reponse)', function(done){
+	
+    	var m = new manager_sync_request(response_json);
+	// Either.
+	//m.headers([['accept', 'application/sparql-results+json']]);
+    	var resp = m.fetch(wikidata + '?query=' + encodeURIComponent(wikiquery),
+			   null, 'POST',
+			   [['accept', 'application/sparql-results+json']]);
+	//console.log(m.headers());
+	//console.log(resp.raw());
+
+    	assert.isDefined(resp.raw()['head'], 'has json head');
+    	assert.isDefined(resp.raw()['results'], 'has json results');
+
+	done();
+    });
+
+});
+    
+describe('wikidata header tests; jquery + bbop-rest-response#json', function(){
+
+    var mock_jQuery = null;
+    before(function(){
+	// Modify the manager into functioning--will need this to get
+	// tests working for jQuery in this environment.
+	var domino = require('domino');
+	mock_jQuery = require('jquery')(domino.createWindow());
+	var XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
+	mock_jQuery.support.cors = true;
+	mock_jQuery.ajaxSettings.xhr = function() {
+	    return new XMLHttpRequest();
+	};
+    });
+
+    it('wikidata json GET', function(done){
+	this.timeout(timeout); // doing remote things, could take a while
+	
+	// Goose jQuery into functioning here.
+    	var m = new manager_jquery(response_json);
+	m.JQ = mock_jQuery;
+
+    	m.register('success', function(resp, man){
+	    //console.log(m.headers());
+	    //console.log(resp.raw());
+    	    assert.isDefined(resp.raw()['head'], 'has json head');
+    	    assert.isDefined(resp.raw()['results'], 'has json results');
+	    done();
+    	});
+    	m.register('error', function(resp, man){
+	    console.log(resp);
+    	    assert.equal(true, false, 'jquery success callback is not expected');
+	    done();
+    	});	    
+    	m.start(wikidata + '?query=' + encodeURIComponent(wikiquery),
+		null, null,
+		[['accept', 'application/sparql-results+json']]);
+    });
+
+    // Seems to timeout a lot, not sure what's up.
+    // it('wikidata json POST', function(done){
+    // 	this.timeout(timeout); // doing remote things, could take a while
+
+    // 	// Goose jQuery into functioning here.
+    // 	var m = new manager_jquery(response_json);
+    // 	m.JQ = mock_jQuery;
+
+    // 	m.register('success', function(resp, man){
+    // 	    //console.log(m.headers());
+    // 	    //console.log(resp.raw());
+    // 	    assert.isDefined(resp.raw()['head'], 'has json head');
+    // 	    assert.isDefined(resp.raw()['results'], 'has json results');
+    // 	    done();
+    // 	});
+    // 	m.register('error', function(resp, man){
+    // 	    console.log(resp);
+    // 	    assert.equal(true, false, 'jquery success callback is not expected');
+    // 	    done();
+    // 	});	    
+    // 	m.start(wikidata + '?query=' + encodeURIComponent(wikiquery),
+    // 		null, 'POST',
+    // 		[['accept', 'application/sparql-results+json']]);
+    // });
 });
