@@ -569,6 +569,8 @@ describe('wikidata header tests; jquery + bbop-rest-response#json', function(){
     	    //console.log(resp.raw());
     	    assert.isDefined(resp.raw()['head'], 'has json head');
     	    assert.isDefined(resp.raw()['results'], 'has json results');
+    	    assert.equal(resp.raw()['results']['bindings'].length, 1,
+			     'has 1 json results');
     	    done();
     	});
     	m.register('error', function(resp, man){
@@ -597,7 +599,7 @@ describe('wikidata header tests; jquery + bbop-rest-response#json', function(){
     	    assert.isDefined(resp.raw()['results'], 'has json results');
 	    //console.log(resp.raw()['results']['bindings']);
     	    assert.equal(resp.raw()['results']['bindings'].length, 1,
-			     'has 2 json results');
+			     'has 1 json results');
     	    done();
     	});
     	m.register('error', function(resp, man){
