@@ -556,27 +556,58 @@ describe('wikidata header tests; jquery + bbop-rest-response#json', function(){
     });
 
     // Seems to timeout a lot, not sure what's up.
-    // it('wikidata json POST', function(done){
-    // 	this.timeout(timeout); // doing remote things, could take a while
+    // But sometimes not.
+    it('wikidata json POST with URL', function(done){
+    	this.timeout(timeout); // doing remote things, could take a while
 
-    // 	// Goose jQuery into functioning here.
-    // 	var m = new manager_jquery(response_json);
-    // 	m.JQ = mock_jQuery;
+    	// Goose jQuery into functioning here.
+    	var m = new manager_jquery(response_json);
+    	m.JQ = mock_jQuery;
 
-    // 	m.register('success', function(resp, man){
-    // 	    //console.log(m.headers());
-    // 	    //console.log(resp.raw());
-    // 	    assert.isDefined(resp.raw()['head'], 'has json head');
-    // 	    assert.isDefined(resp.raw()['results'], 'has json results');
-    // 	    done();
-    // 	});
-    // 	m.register('error', function(resp, man){
-    // 	    console.log(resp);
-    // 	    assert.equal(true, false, 'jquery success callback is not expected');
-    // 	    done();
-    // 	});	    
-    // 	m.start(wikidata + '?query=' + encodeURIComponent(wikiquery),
-    // 		null, 'POST',
-    // 		[['accept', 'application/sparql-results+json']]);
-    // });
+    	m.register('success', function(resp, man){
+    	    //console.log(m.headers());
+    	    //console.log(resp.raw());
+    	    assert.isDefined(resp.raw()['head'], 'has json head');
+    	    assert.isDefined(resp.raw()['results'], 'has json results');
+    	    done();
+    	});
+    	m.register('error', function(resp, man){
+    	    console.log(resp);
+    	    assert.equal(true, false, 'jquery success callback is not expected');
+    	    done();
+    	});	    
+    	m.start(wikidata + '?query=' + encodeURIComponent(wikiquery),
+    		null, 'POST',
+    		[['accept', 'application/sparql-results+json']]);
+    });
+
+    // Seems to timeout a lot, not sure what's up.
+    // But sometimes not.
+    it('wikidata json POST with payload', function(done){
+    	this.timeout(timeout); // doing remote things, could take a while
+
+    	// Goose jQuery into functioning here.
+    	var m = new manager_jquery(response_json);
+    	m.JQ = mock_jQuery;
+
+    	m.register('success', function(resp, man){
+    	    //console.log(m.headers());
+    	    //console.log(resp.raw());
+    	    assert.isDefined(resp.raw()['head'], 'has json head');
+    	    assert.isDefined(resp.raw()['results'], 'has json results');
+	    //console.log(resp.raw()['results']['bindings']);
+    	    assert.equal(resp.raw()['results']['bindings'].length, 1,
+			     'has 2 json results');
+    	    done();
+    	});
+    	m.register('error', function(resp, man){
+    	    console.log(resp);
+    	    assert.equal(true, false, 'jquery success callback is not expected');
+    	    done();
+    	});	    
+    	m.start(wikidata,
+    		{'query': wikiquery},
+		'POST',
+    		[['accept', 'application/sparql-results+json']]);
+    });
 });
