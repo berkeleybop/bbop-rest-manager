@@ -2,7 +2,7 @@
     "name": "bbop-rest-manager",
     "version": "0.0.4",
     "license": "BSD-3-Clause",
-    "description": "The is the 'new' version of the manager event model for BBOP systems. Every users should be using bbop-rest-manager.",
+    "description": "The is the 'new' version of the manager event model for BBOP systems.",
     "keywords": [
         "node",
         "npm",
