@@ -60,7 +60,6 @@
         "js-yaml": "3.10.0",
         "jsdoc": "^3.3.0",
         "jsdoc-baseline": "git://github.com/hegemonic/jsdoc-baseline.git#74d1dc8075",
-        "sleep": "^6.3.0",
         "spdx-license-list": "3.0.1"
     },
     "bundleDependencies": [],
