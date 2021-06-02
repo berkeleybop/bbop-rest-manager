@@ -35,7 +35,7 @@ before(function(done){
     // in a second to start functioning.
     var spawn = require('child_process').spawn;
     test_server = spawn('node', ['./scripts/test-server.js']);
-    var sleep = require('sleep').sleep(1);
+    // var sleep = require('sleep').sleep(1);
     //test_server.stdin.end();    
 
     test_server.on('err', function(err){
