@@ -33,7 +33,7 @@
         "body-parser": "1.13.3",
         "domino": "1.0.19",
         "express": "4.13.3",
-        "jquery": "2.1.4",
+        "jquery": "3.5.0",
         "q": "1.4.1",
         "sync-request": "2.0.1",
         "underscore": "1.8.3",
